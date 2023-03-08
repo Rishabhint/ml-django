@@ -1,20 +1,17 @@
 from .predict import predict
+import os
+from django.conf import settings
 from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
 
 
 def upload_image(request):
     if request.method == 'POST':
-        img = request.FILES['image']
-        with open('image.jpg', 'wb+') as destination:
-            for chunk in img.chunks():
-                destination.write(chunk)
-        return render(request, 'result.html', {'image': 'image.jpg'})
-    return render(request, 'upload.html')
-
-
-def predict_image(request):
-    if request.method == 'POST':
-        image_path = request.POST['image_path']
-        preds = predict(image_path)
-        return render(request, 'result.html', {'preds': preds})
+        image = request.FILES['image']
+        fs = FileSystemStorage()
+        filename = fs.save(image.name, image)
+        uploaded_file_url = fs.url(filename)
+        image_path = os.path.join(settings.MEDIA_ROOT, filename)
+        result = predict(image_path)
+        return render(request, 'result.html', {'result': result})
     return render(request, 'upload.html')

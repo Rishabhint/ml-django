@@ -8,7 +8,7 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 # Reading the image file
 
 
-def take_input(image_path):
+def predict(image_path):
     image = cv2.imread(image_path)
     image = imutils.resize(image, width=500)
     cv2.imshow("Orignal Image", image)
@@ -84,5 +84,5 @@ def take_input(image_path):
     cv2.imshow("cropped image", cv2.imread(crop_img_loc))
 
     text = pytesseract.image_to_string(crop_img_loc, lang="eng")
-    print('Number is:', text)
+    return(text)
     cv2.waitKey(0)
